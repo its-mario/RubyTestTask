@@ -1,2 +1,7 @@
 /pices
 test.rb
+/trash
+output.json
+/.bundle
+bin/*
+!bin/main.rb
