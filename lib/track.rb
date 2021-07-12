@@ -1,21 +1,20 @@
 require 'rest-client'
 require 'json'
+require_relative 'spotify_client.rb'
 
 TOKEN_TYPE = 'Bearer '
 
-
 class Track
 
-    attr_reader :id, :name, :artis_name, :album_name, :spotify_url
+    attr_reader :id, :name, :artist_name, :album_name, :spotify_url
 
     def initialize args
-        parsed_args = self.parse(args)
-        @id = parsed_args[:id]
-        @name = parsed_args[:name]
-        @artis_name = parsed_args[:artis_name]
-        @album_name = parsed_args[:album_name]
-        @spotify_url = parsed_args[:spotify_url]
-        @attr_hash = parsed_args
+        @id = args[:id]
+        @name = args[:name]
+        @artist_name = args[:artist_name]
+        @album_name = args[:album_name]
+        @spotify_url = args[:spotify_url]
+        @as_hash = args
     end
 
     def self.to_uri(id)
@@ -29,7 +28,7 @@ class Track
         }
         response = RestClient.get(url, headers)
         response = JSON.parse(response)
-        new(response)
+        self.parse(response)
     end
 
     def to_uri
@@ -37,21 +36,16 @@ class Track
     end
 
     def to_json *options
-        @attr_hash.to_json *options
+        @as_hash.to_json options
     end
 
-    def as_json
-        @attr_hash
-    end
-
-    private
-    def parse args
+    
+    def self.parse args
+        #check type
         unless args.class == String or args.class == Hash then 
             raise "wrong type args must be of type Hash or String(JSON)" 
         end
-          
         args = JSON.parse(args) if args.class == String
-        
         #if track has more than one artist 
         if args['artists'].length > 1 then
             names = args['artists'].map { |artist| artist['name'] }
@@ -59,15 +53,15 @@ class Track
         else 
             artists = args['artists'][0]['name']  
         end
-        
         album_name = args['album']['name']
         spotify_url = args['external_urls']['spotify']
-        {
+        hash = {
             :id => args['id'],
             :name => args['name'],
             :artist_name => artists,
             :album_name => album_name,
             :spotify_url => spotify_url 
         }
+        new(hash)
     end
 end

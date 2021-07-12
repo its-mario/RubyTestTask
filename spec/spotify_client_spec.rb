@@ -1,2 +1,0 @@
-require 'spotify_client'
-

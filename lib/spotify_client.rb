@@ -5,7 +5,7 @@ require 'uri'
 require 'cgi'
 
 class SpotifyClient
-    attr_reader :user_name, :user_id
+    attr_reader  :user_id
 
     def initialize(client_id, client_secret, redirect_uri: "http://localhost/")
         @client_id = client_id
@@ -13,8 +13,15 @@ class SpotifyClient
         @redirect_uri = redirect_uri 
         self.auth
     end
+    
+    # def self.new_token(token)
+    #     @token
+    #     new()
+    # end
 
+    #return a fresh token
     def token
+        #checks if token expired and refresh it 
         now = Time.new.to_i
         if now > (@token_birth + @token_expiration - 100) then 
             self.refresh_token
@@ -26,22 +33,16 @@ class SpotifyClient
     def get_me(token_type:'Bearer') 
         url = 'https://api.spotify.com/v1/me'
         headers={
-            "Authorization"=>token_type + ' ' + self.token,
+            "Authorization"=> token_type + ' ' + self.token,
         }
-        
-        response = RestClient.get(
-            url,
-            headers
-        )
-        
+        response = RestClient.get(url, headers)
         response = JSON.parse(response.body)
         @user_id = response['id']
-        @user_name = response['display_name']
     end
     
 
     protected
-
+    #all steps implemented in one function
     def auth 
         url = build_auth_url
         link = get_acces_link(url)
@@ -49,6 +50,7 @@ class SpotifyClient
         token = get_token(code)
         get_me 
     end
+
 
     def build_auth_url
         base_url = 'https://accounts.spotify.com/authorize'
@@ -59,20 +61,24 @@ class SpotifyClient
     def get_acces_link(url)
         browser = Watir::Browser.new
         browser.goto url
-    
-        # Watir::Wait.until { }
-        until (URI(browser.url).host == 'localhost')
+
+        # Watir::Wait.until { } # have a 30s time out exception
+        # loop that will stop broswer from stoping until 
+        # page with given host will be opend
+        # default: localhost
+        until (URI(browser.url).host == URI(@redirect_uri).host)
             sleep 1
         end
         response_url = browser.url
         browser.close
         response_url
     end
-
+    
+    # return code from acces_link
+    # raise error if you denied accesing data 
     def parse_url(url)
         uri = URI(url)
         params = CGI.parse(uri.query)
-        
         if params['error'] != "access_denied" then
             params['code'] = params['code'][0]
             params['code'] 
@@ -81,7 +87,7 @@ class SpotifyClient
         end
     end
 
-
+    # first request for token
     def get_token(code)
         url = 'https://accounts.spotify.com/api/token'
         body = {
@@ -99,6 +105,7 @@ class SpotifyClient
         @token = response['access_token']
     end
 
+    # for updating token every time it expires
     def refresh_token
         url = 'https://accounts.spotify.com/api/token'
         headers ={ 
