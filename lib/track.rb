@@ -3,8 +3,7 @@
 require 'rest-client'
 require 'json'
 require_relative 'spotify_client'
-
-TOKEN_TYPE = 'Bearer '
+require_relative 'constants'
 
 # This class represent ruby implementation of spotify-track
 class Track
@@ -22,10 +21,10 @@ class Track
   #   - passing id and spotify-client for getting data of this track
   #     Track.by_id(id, spotify_client)
   #
-  # also class has extra method:
-  #   - Track.to_uri(id) -convert id into uri
+  # also class has one extra method:
+  #   - Track.to_uri(id) -convert spotify-track-id into spotify-track-uri
   #
-  # Class has to_json method that return JSON-object of instance
+  # class has to_json method that return JSON-object of instance
 
   attr_reader :id, :name, :artist_name, :album_name, :spotify_url
 

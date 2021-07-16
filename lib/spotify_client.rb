@@ -8,9 +8,12 @@ require 'cgi'
 
 # This class represent a spotify client implementation
 class SpotifyClient
-  # it auth user using spotify account from broswer
-  # and gets acces to spotify api using token that it return under
-  # token method
+  # class is instancing with spotify-client_id and spotify-client_secret
+  #
+  # on instancing it auth user using a browser window
+  #
+  # it has a token method
+  # token method always return a valid value of token (it automatically refresh tokenehen this exipire)
   #
   # parameters for instacing (spotify-client-id and spotify-client-secret)
 
@@ -98,7 +101,8 @@ class SpotifyClient
       'client_id' => @client_id,
       'client_secret' => @client_secret
     }
-    response = JSON.parse(RestClient.post(url, body))
+    headers = { 'Content-Type' => 'application/x-www-form-urlencoded' }
+    response = JSON.parse(RestClient.post(url, body, headers))
     init_token(response['access_token'], response['expires_in'], refresh_token: response['refresh_token'])
   end
 

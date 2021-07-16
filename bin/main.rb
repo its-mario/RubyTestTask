@@ -3,10 +3,8 @@
 require_relative '../lib/playlist'
 require_relative '../lib/spotify_client'
 require_relative '../lib/track'
-
-# Spotify client_id and client_secret
-CLIENT_ID = ''
-CLIENT_SECRET = ''
+#file with client_id and client_secret
+require_relative '../configs'
 
 client = SpotifyClient.new(CLIENT_ID, CLIENT_SECRET)
 playlist = Playlist.new({ spotify_client: client, name: 'My new playlist' })

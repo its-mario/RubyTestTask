@@ -2,8 +2,8 @@
 
 require_relative 'spotify_client'
 require_relative 'track'
+require_relative 'constants'
 require 'uri'
-TOKEN_TYPE = 'Bearer '
 
 # This class represent ruby implementation of spotify-playlist
 class Playlist
@@ -16,7 +16,7 @@ class Playlist
   #   - move(from_position: Integer, to_positon: Integer) move track [from] postion [to] postion
   #       support negative values
   #   - remove(postion: Integer) for remove a specific postion in playlist
-  #     because spotify_api support deleting only by uri on deleting a position it delete all tracks with matching uri
+  #     because spotify_api support deleting only by uri on deleting a position it will delete all tracks with matching uri
   #   - add(spotify-uris-of-tracks: List<String>)
 
   attr_reader :id, :name, :description, :owner_name, :spotify_url, :tracks

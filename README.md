@@ -13,7 +13,7 @@ then install broswer drivers for your system [Drivers – Watir Project](http://
 ruby bin/main.rb
 ```
 
-**Don't forget to set *client_id* and  *clinet_secret* in 'bin/main.rb'** [My Dashboard | Spotify for Developers](https://developer.spotify.com/dashboard/login)  
+**Don't forget to set *client_id* and  *clinet_secret* in 'configs.rb'** [My Dashboard | Spotify for Developers](https://developer.spotify.com/dashboard/login)  
 
 ## Output example
 

@@ -5,4 +5,3 @@ output.json
 /.bundle
 bin/*
 !bin/main.rb
-configs.rb
